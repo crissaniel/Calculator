@@ -23,15 +23,68 @@ def backspace():
 def clear():
     e.delete(0, END)
 
-def calculate():
-    operations = {'+','-','*','/'}
-    expr = e.get()
-    for element in expr:
-        if isinstance(element, (int, float)):
-            return
-        elif element in operations:
-            
-        
+def evaluate_pemdas():
+    expression = e.get()
+    def apply_operator(operators, values):
+        operator = operators.pop()
+        b = values.pop()
+        a = values.pop()
+        if operator == '+':
+            values.append(a+b)
+        elif operator == '-':
+            values.append(a-b)
+        elif operator == '*':
+            values.append(a*b)
+        elif operator == '/':
+            values.append(a/b)
+        elif operator == '-':
+            values.append(a**b)
+
+    def precedence(op):
+        if op in ('+', '-'):
+            return 1
+        elif op in ('*', '/'):
+            return 2
+        elif op in ('**'):
+            return 3
+        return 0
+    
+    operators = []
+    values = []
+    i = 0
+    n = len(expression)
+    while i < n:
+        if expression[i].isdigit() or expression[i] == '.':
+            num_str = ''
+            while i < n and (expression[i].isdigit() or expression[i] == '.'):
+                num_str += expression[i]
+                i+=1
+            values.append(float(num_str) if '.' in num_str else int(num_str))
+            continue
+        elif expression[i] == '(':
+            operators.append(expression[i])
+        elif expression[i] == ')':
+            while operators and operators[-1] != '(':
+                apply_operator(operators, values)
+            operators.pop()
+        else:
+            if expression[i] =='*' and i+1 < n and expression[i+1] == '*':
+                op ='**'
+                i += 1
+            else:
+                op = expression[i]
+            while (operators and operators[-1] != '(' and precedence(operators[-1]) >= precedence(op)):
+                apply_operator(operators, values)
+            operators.append(expression[i])
+        i+=1
+
+    while operators:
+        apply_operator(operators, values)
+    
+    e.delete(0, END)
+    e.insert(0, str(values[0]))
+
+                   
 # Numeric buttons 1-9
 for row in range(3, 6):
     for col in range(3): 
@@ -46,7 +99,7 @@ Button(root, text = 0, width =5, height = 2, command = lambda: buttClick(0)).gri
 
 # Operation buttons
 Button(root, text = ".", width = 5, height = 2, command = lambda: buttClick(".")).grid(row=6, column = 0)
-Button(root, text = "=", width = 5, height = 2, command = calculate).grid(row=6, column = 2)
+Button(root, text = "=", width = 5, height = 2, command = evaluate_pemdas).grid(row=6, column = 2)
 Button(root, text = "+", width = 5, height = 2, command = lambda: buttClick("+")).grid(row=6, column = 3)
 Button(root, text = "-", width = 5, height = 2, command = lambda: buttClick("-")).grid(row=5, column = 3)
 Button(root, text = "x", width = 5, height = 2, command = lambda: buttClick("*")).grid(row=4, column = 3)
