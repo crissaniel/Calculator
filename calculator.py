@@ -4,13 +4,14 @@ root = Tk()
 root.title("Calculator")
 root.configure(bg="lightblue")
 
-Header1 = Label(root, text="Calculator", font="Papyrus")
-Header1.grid(row = 0, column = 0, columnspan = 5)
-
-e = Entry(root, borderwidth = 5, font = ("Papyrus", 10))
-e.grid(row=1, column=0, columnspan=5)
-
 butt_num = 11
+
+def enter():
+        evaluate_pemdas()
+
+def validate_input(char):
+    allowed = "0123456789.+-*/()"
+    return char == "" or all(c in allowed for c in char)
 
 def buttClick(value):
     e.insert(END, str(value))
@@ -98,14 +99,23 @@ for row in range(3, 6):
 Button(root, text = 0, width =5, height = 2, command = lambda: buttClick(0)).grid(row=6, column=1)
 
 # Operation buttons
+symbols = {"/","*","-","+"}
+r = 0
+for element in symbols:
+    Button(root, text = element, width = 5, height = 2, command = lambda element = element: buttClick(element)).grid(row = 3+r, column = 3)
+    r+=1
+
 Button(root, text = ".", width = 5, height = 2, command = lambda: buttClick(".")).grid(row=6, column = 0)
 Button(root, text = "=", width = 5, height = 2, command = evaluate_pemdas).grid(row=6, column = 2)
-Button(root, text = "+", width = 5, height = 2, command = lambda: buttClick("+")).grid(row=6, column = 3)
-Button(root, text = "-", width = 5, height = 2, command = lambda: buttClick("-")).grid(row=5, column = 3)
-Button(root, text = "x", width = 5, height = 2, command = lambda: buttClick("*")).grid(row=4, column = 3)
-Button(root, text = "/", width = 5, height = 2, command = lambda: buttClick("/")).grid(row=3, column = 3)
 Button(root, text = "C", width = 5, height = 2, command = clear).grid(row=2, column = 2)
 Button(root, text = "<=", width = 5, height = 2, command = backspace).grid(row=2, column = 3)
 
+Header1 = Label(root, text="Calculator", font="Papyrus")
+Header1.grid(row = 0, column = 0, columnspan = 5)
+
+vcmd = (root.register(validate_input), '%P')
+e = Entry(root, borderwidth = 5, font = ("Papyrus", 10), validate = "key", validatecommand=vcmd)
+e.grid(row=1, column=0, columnspan=5)
+e.bind("<Return>", enter)
 
 root.mainloop()
