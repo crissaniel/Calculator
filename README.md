@@ -1,2 +1,2 @@
 # Calculator
-A calculator developed using Tkinter
+A calculator developed using Tkinter Python
