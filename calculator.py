@@ -38,7 +38,7 @@ def evaluate_pemdas():
             values.append(a*b)
         elif operator == '/':
             values.append(a/b)
-        elif operator == '-':
+        elif operator == '**':
             values.append(a**b)
 
     def precedence(op):
@@ -76,7 +76,7 @@ def evaluate_pemdas():
                 op = expression[i]
             while (operators and operators[-1] != '(' and precedence(operators[-1]) >= precedence(op)):
                 apply_operator(operators, values)
-            operators.append(expression[i])
+            operators.append(op)
 
         i+=1
 
@@ -84,6 +84,7 @@ def evaluate_pemdas():
         apply_operator(operators, values)
     
     e.delete(0, END)
+    print(str(values[0]))
     e.insert(0, str(values[0]))
 
                    
