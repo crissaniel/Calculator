@@ -6,7 +6,7 @@ root.configure(bg="lightblue")
 
 butt_num = 11
 
-def enter():
+def enter(event=None):
         evaluate_pemdas()
 
 def validate_input(char):
@@ -77,6 +77,7 @@ def evaluate_pemdas():
             while (operators and operators[-1] != '(' and precedence(operators[-1]) >= precedence(op)):
                 apply_operator(operators, values)
             operators.append(expression[i])
+
         i+=1
 
     while operators:
@@ -116,6 +117,7 @@ Header1.grid(row = 0, column = 0, columnspan = 5)
 vcmd = (root.register(validate_input), '%P')
 e = Entry(root, borderwidth = 5, font = ("Papyrus", 10), validate = "key", validatecommand=vcmd)
 e.grid(row=1, column=0, columnspan=5)
+
 e.bind("<Return>", enter)
 
 root.mainloop()
